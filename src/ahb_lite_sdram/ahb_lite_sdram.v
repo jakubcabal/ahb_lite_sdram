@@ -107,6 +107,7 @@ module ahb_lite_sdram
     reg     [  2 : 0 ]              HSIZE_old;
     reg     [ 31 : 0 ]              HADDR_old;
     reg                             HWRITE_old;
+    reg     [ 31 : 0 ]              HWDATA_old;
     reg     [  1 : 0 ]              HTRANS_old;
 
     reg     [ 31 : 0 ]              DATA;
@@ -213,13 +214,14 @@ module ahb_lite_sdram
             S_IDLE              :   if (HSEL) begin 
                                         HADDR_old   <= HADDR;   HWRITE_old  <= HWRITE; 
                                         HSIZE_old   <= HSIZE;   HTRANS_old  <= HTRANS;  
+                                        HWDATA_old  <= HWDATA;  
                                     end
 
             S_INIT0_nCKE        :   { HADDR_old, HWRITE_old, HSIZE_old, HTRANS_old } <= { 38 {1'b0}};
 
             S_READ4_RD0         :   DATA [15:0] <= DQ;
             S_READ5_RD1         :   HRDATA <= { DQ, DATA [15:0] };
-            S_WRITE0_ACT        :   DATA <= HWDATA;
+            S_WRITE0_ACT        :   DATA <= HWDATA_old;
             default             :   ;
         endcase
     end

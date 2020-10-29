@@ -136,6 +136,7 @@ module ahb_lite_sdram
     end
 
     always @ (*) begin
+        Next = State;
 
         //State change decision
         case(State)
@@ -177,6 +178,7 @@ module ahb_lite_sdram
 
             S_AREF0_AUTOREF     :   Next = S_AREF1_NOP;
             S_AREF1_NOP         :   Next = ~DelayFinished ? S_AREF1_NOP : S_IDLE;
+            default             :   Next = S_INIT0_nCKE;
         endcase
     end
 
@@ -263,6 +265,9 @@ module ahb_lite_sdram
     // set SDRAM i/o
     always @ (*) begin
         // command and addr
+        cmd = CMD_NOP;
+        ADDR = SDRAM_ALL_BANKS;
+        BA = SDRAM_MODE_B;
         case(State)
             default             :   cmd = CMD_NOP;
             S_INIT0_nCKE        :   cmd = CMD_NOP_NCKE;
